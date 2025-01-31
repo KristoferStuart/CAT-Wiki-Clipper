@@ -1,0 +1,11 @@
+{
+    "script": "index.js",
+    "watch": true,
+    "ignore_watch": [
+        "node_modules", "img"
+    ],
+    "watch_options": {
+        "followSymLinks": false
+    },
+    "name": "CAT_Wiki_Clipper"
+}
