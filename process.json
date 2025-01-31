@@ -2,7 +2,7 @@
     "script": "index.js",
     "watch": true,
     "ignore_watch": [
-        "node_modules", "img"
+        "node_modules"
     ],
     "watch_options": {
         "followSymLinks": false
