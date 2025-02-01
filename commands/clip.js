@@ -40,10 +40,10 @@ module.exports = {
         let res, list;
         if (!option.value) {
           res = await fetch(
-            "https://wiki.rossmanngroup.com/api.php?action=query&format=json&generator=categorymembers&formatversion=2&gcmtitle=Category%3ACompanies&gcmtype=page&gcmlimit=25",
+            "https://wiki.rossmanngroup.com/api.php?action=query&format=json&list=random&formatversion=2&rnnamespace=0&rnfilterredir=all&rnlimit=25",
           );
           const resjson = await res.json();
-          list = resjson.query.pages.map((item) => item.title);
+          list = resjson.query.random.map((item) => item.title);
         } else {
           res = await fetch(
             `https://wiki.rossmanngroup.com/api.php?action=opensearch&format=json&search=${option.value}&formatversion=2&redirects=resolve`,
