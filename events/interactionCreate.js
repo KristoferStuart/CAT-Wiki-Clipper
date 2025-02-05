@@ -9,6 +9,8 @@ const {
   StringSelectMenuOptionBuilder,
 } = require("discord.js");
 const puppeteer = require("puppeteer");
+const theme = require('../themes.json');
+
 
 module.exports = {
   name: Events.InteractionCreate,
@@ -83,7 +85,7 @@ module.exports = {
             flags: MessageFlags.Ephemeral,
           });
           const res = await fetch(
-            `https://wiki.rossmanngroup.com/api.php?action=parse&format=json&disableeditsection=1&page=${article}&prop=text|displaytitle&formatversion=2&redirects=1${section}`,
+            `https://wiki.rossmanngroup.com/api.php?action=parse&format=json&disableeditsection=1&page=${encodeURIComponent(article)}&prop=text|displaytitle&formatversion=2&redirects=1${section}`,
           );
           const resjson = await res.json();
           let html = resjson.parse.text;
@@ -95,20 +97,44 @@ module.exports = {
             "/images/",
             "https://wiki.rossmanngroup.com/images/",
           );
-          const startTitleRemove = html.indexOf(
-            '<div class=\"infobox-title\">',
-          );
-          const endTitleRemove = html.indexOf("</div>", startTitleRemove) + 7;
-          const fullElement = html.slice(startTitleRemove, endTitleRemove);
-          html = await html.replace(fullElement, "");
-          const browser2 = await puppeteer.launch({ args: ["--no-sandbox"] });
+          const browser2 = await puppeteer.launch({
+            args: ['--no-sandbox',
+              '--disable-setuid-sandbox',
+              '--disable-dev-shm-usage',
+              '--disable-session-crashed-bubble',
+              '--disable-accelerated-2d-canvas',
+              '--no-first-run',
+              '--no-zygote',
+              '--single-process',
+              '--noerrdialogs',
+              '--disable-gpu']
+          });
           const page = await browser2.newPage();
-          await page.setContent(
-            `<div style="margin:10px"><span style="font-size:36px">${resjson.parse.displaytitle}</span>${html}<div style="display:flex; justify-content: center; color:grey; padding-top:15px; padding-bottom:10px; font-size: 12px">https://wiki.rossmanngroup.com/wiki/${article}</div></div>`,
+          await page.setContent(`
+            <body class="skin--responsive skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Mission_statement rootpage-Mission_statement skin-vector-2022 action-view uls-dialog-sticky-hide">
+            <div class="mw-page-container">
+            <div class="mw-page-container-inner">
+            <div class="mw-content-container">
+            <main id="content" class="mw-body">
+            <div id="bodyContent" class="vector-body ve-init-mw-desktopArticleTarget-targetContainer" aria-labelledby="firstHeading" data-mw-ve-target-container>
+            <div id="mw-content-text" class="mw-body-content">
+            ${(section !== "")? `<h1>${article}</h1>` : ``}
+            ${html}
+            <div style="display:flex; justify-content: center; color:grey; padding-top:15px; padding-bottom:10px; font-size: 16px">https://wiki.rossmanngroup.com/wiki/${article}</div>
+            </div>
+            </div>
+          </main>
+          </div>
+          </div>
+          </div>
+          </body>`
           );
           await page.addStyleTag({ content: `#toc {display:none;}` });
           await page.addStyleTag({
-            url: "https://wiki.rossmanngroup.com/load.php?lang=en&modules=ext.cite.styles%7Cext.visualEditor.desktopArticleTarget.noscript%7Cskins.monobook.styles&only=styles&skin=monobook",
+            url: "https://wiki.rossmanngroup.com/load.php?lang=en&modules=ext.visualEditor.desktopArticleTarget.noscript%7Cskins.vector.icons%2Cstyles%7Cskins.vector.search.codex.styles&only=styles&skin=vector-2022",
+          });
+          await page.addStyleTag({
+            url: "https://wiki.rossmanngroup.com/load.php?lang=en&modules=site.styles&only=styles&skin=vector-2022",
           });
           await page.setViewport({
             width: width,
@@ -172,18 +198,44 @@ module.exports = {
         "/images/",
         "https://wiki.rossmanngroup.com/images/",
       );
-      const startTitleRemove = html.indexOf('<div class=\"infobox-title\">');
-      const endTitleRemove = html.indexOf("</div>", startTitleRemove) + 7;
-      const fullElement = html.slice(startTitleRemove, endTitleRemove);
-      html = await html.replace(fullElement, "");
-      const browser2 = await puppeteer.launch({ args: ["--no-sandbox"] });
+      const browser2 = await puppeteer.launch({
+        args: ['--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-session-crashed-bubble',
+          '--disable-accelerated-2d-canvas',
+          '--no-first-run',
+          '--no-zygote',
+          '--single-process',
+          '--noerrdialogs',
+          '--disable-gpu']
+      });
       const page = await browser2.newPage();
-      await page.setContent(
-        `<div style="margin:10px"><span style="font-size:36px">${resjson.parse.displaytitle}</span>${html}<div style="display:flex; justify-content: center; color:grey; padding-top:15px; padding-bottom:10px; font-size: 12px">https://wiki.rossmanngroup.com/wiki/${article}</div></div>`,
+      await page.setContent(`
+        <body class="skin--responsive skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Mission_statement rootpage-Mission_statement skin-vector-2022 action-view uls-dialog-sticky-hide">
+        <div class="mw-page-container">
+        <div class="mw-page-container-inner">
+        <div class="mw-content-container">
+        <main id="content" class="mw-body">
+        <div id="bodyContent" class="vector-body ve-init-mw-desktopArticleTarget-targetContainer" aria-labelledby="firstHeading" data-mw-ve-target-container>
+        <div id="mw-content-text" class="mw-body-content">
+        ${(section !== "")? `<h1>${article}</h1>` : ``}
+        ${html}
+        <div style="display:flex; justify-content: center; color:grey; padding-top:15px; padding-bottom:10px; font-size: 16px">https://wiki.rossmanngroup.com/wiki/${article}</div>
+        </div>
+        </div>
+      </main>
+      </div>
+      </div>
+      </div>
+      </body>`
       );
       await page.addStyleTag({ content: `#toc {display:none;}` });
       await page.addStyleTag({
-        url: "https://wiki.rossmanngroup.com/load.php?lang=en&modules=ext.cite.styles%7Cext.visualEditor.desktopArticleTarget.noscript%7Cskins.monobook.styles&only=styles&skin=monobook",
+        url: "https://wiki.rossmanngroup.com/load.php?lang=en&modules=ext.visualEditor.desktopArticleTarget.noscript%7Cskins.vector.icons%2Cstyles%7Cskins.vector.search.codex.styles&only=styles&skin=vector-2022",
+      });
+      await page.addStyleTag({
+        url: "https://wiki.rossmanngroup.com/load.php?lang=en&modules=site.styles&only=styles&skin=vector-2022",
       });
       await page.setViewport({
         width: width,
