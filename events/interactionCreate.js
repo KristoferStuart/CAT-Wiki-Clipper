@@ -9,7 +9,6 @@ const {
   StringSelectMenuOptionBuilder,
 } = require("discord.js");
 const puppeteer = require("puppeteer");
-const theme = require('../themes.json');
 
 
 module.exports = {
